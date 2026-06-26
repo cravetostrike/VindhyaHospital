@@ -552,6 +552,87 @@ try {
         </section>
         <?php endif; ?>
 
+        <!-- Our Departments Section (Alternating Theme Cycle: White) -->
+        <?php
+        $departments = [
+            [
+                'name'  => 'Advanced Pathology Lab',
+                'image' => 'images/graphics-for-homepage/poster-1.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6.5L4.2 17a2 2 0 0 0 1.8 3h12a2 2 0 0 0 1.8-3L15 8.5V2"/><path d="M7 2h10"/><path d="M7.5 13h9"/></svg>',
+                'desc'  => 'Our Advanced Pathology Lab is the diagnostic backbone of the hospital, equipped with fully automated analysers and managed by experienced pathologists and certified lab technicians. We offer a comprehensive range of investigations including haematology, biochemistry, microbiology, serology, histopathology and molecular diagnostics, all processed under strict quality-control protocols. Every sample is handled with a barcoded tracking system that minimises human error and ensures complete traceability from collection to report. Because we understand that timely results save lives, our lab runs round the clock, delivering accurate and reliable reports at the earliest, often within a few hours for routine tests. Our facility maintains international standards of calibration and sterilisation, and our team follows rigorous bio-safety practices to protect both patients and staff. From a simple blood count to complex specialised panels, every test is verified before release so that your treating doctor receives precise, actionable data. Cost-effective pricing, home-sample-collection support and digital report delivery make quality diagnostics accessible and convenient for every patient who walks through our doors.',
+            ],
+            [
+                'name'  => 'ICU (Intensive Care Unit)',
+                'image' => 'images/graphics-for-homepage/poster-2.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 5 4-10 2 5h6"/></svg>',
+                'desc'  => 'Our Intensive Care Unit is designed to provide critical, life-saving care for seriously ill and post-operative patients who need constant monitoring. The unit is fitted with advanced life-support systems including multi-parameter monitors, mechanical ventilators, infusion pumps, defibrillators and central oxygen supply, ensuring that every vital sign is tracked 24×7. A dedicated team of intensivists, critical-care specialists and trained nursing staff remains on duty around the clock, ready to respond instantly to any change in a patient\'s condition. We follow evidence-based protocols for infection control, sepsis management and ventilator care to give patients the safest possible environment for recovery. Each bed is supported by individual monitoring stations and rapid access to emergency medication, while our integrated alarm systems alert caregivers the moment intervention is required. Family counselling and transparent communication are part of our care philosophy, so relatives stay informed at every stage. Whether managing cardiac emergencies, respiratory failure or multi-organ complications, our ICU combines cutting-edge technology with compassionate expertise to maximise survival and ensure a smooth, monitored transition back to the general ward.',
+            ],
+            [
+                'name'  => 'NICU (Neonatal Intensive Care Unit)',
+                'image' => 'images/graphics-for-homepage/poster-3.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-9a6 6 0 0 1 12 0c0 4.65-6 9-6 9z"/><circle cx="12" cy="11" r="2"/></svg>',
+                'desc'  => 'Our Neonatal Intensive Care Unit is specially designed to provide advanced medical care for newborn babies, including premature and critically ill infants who need extra support during their most fragile days. The unit features state-of-the-art incubators, radiant warmers, phototherapy units, neonatal ventilators and continuous monitoring equipment that maintain the precise temperature, oxygen and humidity levels a tiny baby requires. Our team of neonatologists, paediatricians and specially trained NICU nurses delivers gentle, round-the-clock care in a calm, infection-controlled environment. We focus on developmentally supportive care, encouraging early kangaroo-mother contact and breastfeeding wherever possible to strengthen the bond between mother and child. Strict hand-hygiene and sterilisation protocols protect these vulnerable patients from infection, while individualised treatment plans address conditions such as low birth weight, jaundice, respiratory distress and feeding difficulties. Parents are guided and counselled throughout the journey, learning how to care for their baby with confidence before discharge. By combining compassionate nursing with modern neonatal technology, our NICU gives every newborn the best possible start in life and the highest chance of a healthy, thriving future.',
+            ],
+            [
+                'name'  => 'CT Scan',
+                'image' => 'images/graphics-for-homepage/poster-4.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',
+                'desc'  => 'Our CT Scan facility offers fast, high-resolution imaging that helps doctors diagnose a wide range of conditions with remarkable precision. Using a modern multi-slice computed-tomography scanner, we capture detailed cross-sectional images of the brain, chest, abdomen, spine, bones and blood vessels within seconds, reducing scan time and patient discomfort. The system is optimised for low-radiation-dose protocols, ensuring that patients—especially children and the elderly—receive the safest possible exposure without compromising image quality. Our experienced radiologists and technologists work together to plan each study carefully, whether it is a plain scan or a contrast-enhanced angiography, and reports are prepared promptly so treatment can begin without delay. The scanner supports advanced applications such as 3D reconstruction, CT angiography and guided biopsies, giving treating physicians a complete and accurate picture for confident decision-making. We maintain strict safety and hygiene standards, and our staff guides every patient gently through the procedure to ease anxiety. With round-the-clock availability for emergencies, digital image archiving and quick report turnaround, our CT Scan service delivers dependable diagnostic clarity exactly when it matters most.',
+            ],
+            [
+                'name'  => 'Dialysis Unit',
+                'image' => 'images/graphics-for-homepage/poster-5.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S6 9 6 14a6 6 0 0 0 12 0c0-5-6-11.5-6-11.5z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.5"/></svg>',
+                'desc'  => 'Our Dialysis Unit provides safe, comfortable and high-quality care for patients living with chronic kidney disease and acute renal failure. The unit is equipped with modern haemodialysis machines, reverse-osmosis water-treatment plants and individual dialysis stations that ensure every session is delivered under hygienic, precisely controlled conditions. A dedicated team of nephrologists, dialysis technicians and trained nurses supervises each treatment, continuously monitoring blood pressure, fluid balance and vital parameters to keep patients stable throughout the procedure. We follow strict sterilisation and single-use protocols to eliminate the risk of cross-infection, and separate arrangements are maintained for patients who require special isolation. Recognising that dialysis is a long-term journey, we focus on patient comfort with reclining chairs, a calm environment and compassionate support that reduces the physical and emotional strain of regular sessions. Flexible scheduling, including morning and evening slots, makes treatment convenient for working patients and their families. Our team also offers dietary guidance, anaemia management and ongoing counselling to improve overall well-being. With reliable machines, experienced staff and affordable pricing, our Dialysis Unit helps patients maintain a better quality of life with dignity and care.',
+            ],
+            [
+                'name'  => 'Blood Bank',
+                'image' => 'images/graphics-for-homepage/poster-6.jpeg',
+                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S6 9.3 6 14.2a6 6 0 0 0 12 0C18 9.3 12 2.7 12 2.7z"/><path d="M12 9.5v5M9.5 12h5"/></svg>',
+                'desc'  => 'Our Blood Bank is a vital, life-saving facility committed to ensuring a safe and adequate supply of blood and blood components for patients in need. Operating under strict regulatory standards, the unit collects, tests, processes and stores blood with the highest levels of safety and hygiene. Every donated unit undergoes mandatory screening for transfusion-transmissible infections such as HIV, hepatitis B and C, malaria and syphilis, so that only thoroughly tested, compatible blood reaches the patient. With modern component-separation technology, we provide whole blood, packed red cells, platelets, plasma and other components tailored to each clinical requirement, helping us serve more patients from every donation. Temperature-controlled storage, careful cross-matching and meticulous record-keeping guarantee reliability during emergencies, surgeries, deliveries and the treatment of conditions like anaemia and thalassaemia. Our trained staff also organise voluntary blood-donation drives and counsel donors, promoting the noble cause of regular, safe donation within the community. Available round the clock, our Blood Bank works in close coordination with the hospital\'s emergency and surgical departments to ensure that no patient is ever left waiting when a transfusion can mean the difference between life and death.',
+            ],
+        ];
+        ?>
+        <section id="departments" class="departments-section section-bg-white">
+            <div class="container">
+                <div class="section-header departments-header">
+                    <span class="section-badge">Our Departments</span>
+                    <h2 class="section-title">Centers of <span>Excellence</span> &amp; Specialized Departments</h2>
+                    <p class="section-desc">Comprehensive, technology-driven care across our specialised departments — staffed by experienced professionals and built around your safety, comfort and recovery.</p>
+                </div>
+
+                <div class="departments-grid">
+                    <?php foreach ($departments as $dept): ?>
+                        <article class="department-card">
+                            <div class="department-card-top" style="background-image: url('<?php echo htmlspecialchars($dept['image']); ?>');">
+                                <span class="department-card-overlay"></span>
+                                <div class="department-card-head">
+                                    <span class="department-icon"><?php echo $dept['icon']; ?></span>
+                                    <h3 class="department-name"><?php echo htmlspecialchars($dept['name']); ?></h3>
+                                </div>
+                            </div>
+                            <div class="department-card-bottom">
+                                <p class="department-desc"><?php echo htmlspecialchars($dept['desc']); ?></p>
+                                <a href="#appointment" class="department-view-more">
+                                    <span>View More</span>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                                </a>
+                            </div>
+                        </article>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="departments-footer-cta">
+                    <a href="#appointment" class="btn-view-all-departments">
+                        <span>View All Departments</span>
+                        <span class="arrow-circle">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
         <!-- 5. Appointment Booking Section (Alternating Theme Cycle: Soft Gray) -->
         <section id="appointment" class="appointment-booking-section section-bg-soft">
             <div class="container">
