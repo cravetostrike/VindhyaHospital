@@ -376,4 +376,130 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // --- Google Reviews Slider & Modal Popup Logic ---
+    const reviewSlider = document.querySelector('.slider-wrapper');
+    const reviewPrevBtn = document.querySelector('.nav-arrow.prev-btn');
+    const reviewNextBtn = document.querySelector('.nav-arrow.next-btn');
+
+    if (reviewSlider && reviewPrevBtn && reviewNextBtn) {
+        const getReviewScrollAmount = () => {
+            const card = reviewSlider.querySelector('.review-card');
+            if (card) {
+                const cardWidth = card.getBoundingClientRect().width;
+                const gap = parseFloat(window.getComputedStyle(reviewSlider.querySelector('.reviews-track')).gap) || 24;
+                return cardWidth + gap;
+            }
+            return reviewSlider.clientWidth * 0.5;
+        };
+
+        reviewPrevBtn.addEventListener('click', () => {
+            reviewSlider.scrollBy({
+                left: -getReviewScrollAmount(),
+                behavior: 'smooth'
+            });
+        });
+
+        reviewNextBtn.addEventListener('click', () => {
+            reviewSlider.scrollBy({
+                left: getReviewScrollAmount(),
+                behavior: 'smooth'
+            });
+        });
+
+        const toggleReviewArrows = () => {
+            const maxScroll = reviewSlider.scrollWidth - reviewSlider.clientWidth;
+            
+            if (reviewSlider.scrollLeft <= 5) {
+                reviewPrevBtn.style.opacity = '0.3';
+                reviewPrevBtn.style.pointerEvents = 'none';
+            } else {
+                reviewPrevBtn.style.opacity = '1';
+                reviewPrevBtn.style.pointerEvents = 'auto';
+            }
+
+            if (reviewSlider.scrollLeft >= maxScroll - 5) {
+                reviewNextBtn.style.opacity = '0.3';
+                reviewNextBtn.style.pointerEvents = 'none';
+            } else {
+                reviewNextBtn.style.opacity = '1';
+                reviewNextBtn.style.pointerEvents = 'auto';
+            }
+        };
+
+        reviewSlider.addEventListener('scroll', toggleReviewArrows, { passive: true });
+        window.addEventListener('resize', toggleReviewArrows, { passive: true });
+        
+        // Initial call
+        setTimeout(toggleReviewArrows, 150);
+    }
+
+    // Google Reviews Modal Logic
+    const reviewModal = document.getElementById('reviewModal');
+    const modalAvatar = document.getElementById('modalAvatar');
+    const modalAuthor = document.getElementById('modalAuthor');
+    const modalTime = document.getElementById('modalTime');
+    const modalText = document.getElementById('modalText');
+    const modalClose = reviewModal ? reviewModal.querySelector('.review-modal-close') : null;
+
+    if (reviewModal && modalClose) {
+        const openReviewModal = (card) => {
+            const avatar = card.querySelector('.user-avatar');
+            const author = card.querySelector('.user-meta h4').textContent;
+            const time = card.querySelector('.time-ago').textContent;
+            const fullText = card.getAttribute('data-full-text');
+
+            // Copy avatar content and classes (for background coloring)
+            modalAvatar.textContent = avatar.textContent;
+            modalAvatar.className = avatar.className;
+
+            modalAuthor.textContent = author;
+            modalTime.textContent = time;
+            modalText.textContent = fullText;
+
+            reviewModal.classList.add('active');
+            body.style.overflow = 'hidden'; // Disable scroll under overlay
+        };
+
+        const closeReviewModal = () => {
+            reviewModal.classList.remove('active');
+            body.style.overflow = ''; // Restore scroll
+        };
+
+        // Attach listeners to all "Read more" buttons
+        const readMoreBtns = document.querySelectorAll('.read-more-link');
+        readMoreBtns.forEach(btn => {
+            const card = btn.closest('.review-card');
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openReviewModal(card);
+            });
+        });
+
+        // Close actions
+        modalClose.addEventListener('click', closeReviewModal);
+        reviewModal.addEventListener('click', (e) => {
+            if (e.target === reviewModal) {
+                closeReviewModal();
+            }
+        });
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && reviewModal.classList.contains('active')) {
+                closeReviewModal();
+            }
+        });
+    }
 });
+     function switchTab(event, tabId) {
+  // Remove active class from all buttons
+      const buttons = document.querySelectorAll('.tab-btn');
+      buttons.forEach(btn => btn.classList.remove('active'));
+  
+  // Remove active class from all content panels
+      const panels = document.querySelectorAll('.tab-panel');
+      panels.forEach(panel => panel.classList.remove('active'));
+  
+  // Add active class to clicked tab button and targeted panel
+      event.currentTarget.classList.add('active');
+     document.getElementById(tabId).classList.add('active');
+    }

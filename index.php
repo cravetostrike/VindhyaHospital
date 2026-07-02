@@ -35,7 +35,8 @@ try {
 }
 
 // Helper function to return specialty icons
-function getSpecialtyIcon($specialty) {
+function getSpecialtyIcon($specialty)
+{
     $spec = strtolower($specialty);
     if (strpos($spec, 'cardio') !== false) {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="badge-svg" style="width:13px; height:13px; margin-right:5px; display:inline-block; vertical-align:middle;"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>';
@@ -50,6 +51,18 @@ function getSpecialtyIcon($specialty) {
     } else {
         return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="badge-svg" style="width:13px; height:13px; margin-right:5px; display:inline-block; vertical-align:middle;"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6h2a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>';
     }
+}
+
+function getDoctorSlug($name)
+{
+    // Remove Dr. / Dr / DR / DR. prefix
+    $name = preg_replace('/^dr\.\s*|^dr\s+/i', '', trim($name));
+    // Convert to lowercase
+    $name = strtolower($name);
+    // Replace non-alphanumeric characters with hyphens
+    $name = preg_replace('/[^a-z0-9]+/i', '-', $name);
+    // Trim hyphens
+    return trim($name, '-');
 }
 
 // Fetch registered doctors list
@@ -82,6 +95,7 @@ try {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,14 +103,14 @@ try {
     <meta name="description" content="Welcome to Vindhya Hospital & Research Centre (VHRC). Rewa's best healthcare facilities open 24 hours. Book your appointment today.">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
-    
+
     <!-- Website Favicon -->
     <?php if (!empty($settings['website_favicon']) && file_exists(__DIR__ . '/' . $settings['website_favicon'])): ?>
         <link rel="icon" href="<?php echo htmlspecialchars($settings['website_favicon']); ?>?v=<?php echo filemtime(__DIR__ . '/' . $settings['website_favicon']); ?>">
-    <?php else: ?>
-        <link rel="icon" href="images/logo.png">
     <?php endif; ?>
+
 </head>
+
 <body>
 
     <!-- PHP Submission Alert Toasts -->
@@ -104,7 +118,9 @@ try {
         <div class="booking-toast-wrap" id="bookingToast">
             <div class="booking-toast">
                 <div class="toast-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6 9 17l-5-5" />
+                    </svg>
                 </div>
                 <div class="toast-content">
                     <h4>Appointment Submitted!</h4>
@@ -118,7 +134,11 @@ try {
         <div class="booking-toast-wrap error" id="bookingToast">
             <div class="booking-toast">
                 <div class="toast-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <line x1="12" y1="8" x2="12" y2="12" />
+                        <line x1="12" y1="16" x2="12.01" y2="16" />
+                    </svg>
                 </div>
                 <div class="toast-content">
                     <h4>Booking Failed</h4>
@@ -129,173 +149,10 @@ try {
         </div>
     <?php endif; ?>
 
-    <!-- Infinite Scrolling Alert Ticker -->
-    <div class="ticker-wrap">
-        <div class="ticker">
-            <div class="ticker__group">
-                <span>👉 Your Health, Our Priority &bull; 24&times;7 Emergency Services &bull; VHRC Rewa: Committed to Medical Excellence &bull; Emergency Hotline: +91 9589899826</span>
-                <span>👉 Your Health, Our Priority &bull; 24&times;7 Emergency Services &bull; VHRC Rewa: Committed to Medical Excellence &bull; Emergency Hotline: +91 9589899826</span>
-            </div>
-            <div class="ticker__group" aria-hidden="true">
-                <span>👉 Your Health, Our Priority &bull; 24&times;7 Emergency Services &bull; VHRC Rewa: Committed to Medical Excellence &bull; Emergency Hotline: +91 9589899826</span>
-                <span>👉 Your Health, Our Priority &bull; 24&times;7 Emergency Services &bull; VHRC Rewa: Committed to Medical Excellence &bull; Emergency Hotline: +91 9589899826</span>
-            </div>
-        </div>
-    </div>
-
-    <!-- Site Header -->
-    <header class="site-header">
-        
-        <!-- 1. Top Contact & Social Bar -->
-        <div class="top-bar">
-            <div class="container">
-                <div class="top-info">
-                    <div class="info-item">
-                        <!-- Lucide Clock Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        <span><?php echo htmlspecialchars($settings['header_hours'] ?? 'Mon - Sun 0900 - 2100'); ?></span>
-                    </div>
-                    <div class="info-item">
-                        <!-- Lucide Phone Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                        <a href="tel:<?php echo htmlspecialchars(preg_replace('/[^0-9+]/', '', $settings['header_phone'] ?? '+919589899826')); ?>"><?php echo htmlspecialchars($settings['header_phone'] ?? '+91 9589899826'); ?></a>
-                    </div>
-                    <div class="info-item">
-                        <!-- Lucide Mail Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                        <a href="mailto:<?php echo htmlspecialchars($settings['header_email'] ?? 'vhrcrewa@gmail.com'); ?>"><?php echo htmlspecialchars($settings['header_email'] ?? 'vhrcrewa@gmail.com'); ?></a>
-                    </div>
-                </div>
-                
-                <div class="top-socials">
-                    <!-- Facebook -->
-                    <a href="<?php echo htmlspecialchars($settings['social_fb'] ?? '#'); ?>" class="social-link" aria-label="Facebook">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                    </a>
-                    <!-- LinkedIn -->
-                    <a href="<?php echo htmlspecialchars($settings['social_in'] ?? '#'); ?>" class="social-link" aria-label="LinkedIn">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                    </a>
-                    <!-- Pinterest -->
-                    <a href="<?php echo htmlspecialchars($settings['social_pin'] ?? '#'); ?>" class="social-link" aria-label="Pinterest">
-                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.162-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.966 1.406-5.966s-.359-.72-.359-1.781c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146 1.124.347 2.317.535 3.554.535 6.621 0 11.988-5.367 11.988-11.988C24.005 5.368 18.638 0 12.017 0z"/></svg>
-                    </a>
-                    <!-- Twitter -->
-                    <a href="<?php echo htmlspecialchars($settings['social_tw'] ?? '#'); ?>" class="social-link" aria-label="Twitter">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>
-                    </a>
-                    <!-- YouTube -->
-                    <a href="<?php echo htmlspecialchars($settings['social_yt'] ?? '#'); ?>" class="social-link" aria-label="YouTube">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
-                    </a>
-                    <!-- Instagram -->
-                    <a href="<?php echo htmlspecialchars($settings['social_ig'] ?? '#'); ?>" class="social-link" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. Middle Brand & Badges Bar -->
-        <div class="brand-bar">
-            <div class="container">
-                <div class="header-badges">
-                    <!-- Badge 1: Trusted By -->
-                    <div class="header-badge">
-                        <div class="badge-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-                        </div>
-                        <div class="badge-content">
-                            <span class="badge-label"><?php echo htmlspecialchars($settings['accred1_title'] ?? 'Trusted By'); ?></span>
-                            <span class="badge-value"><?php echo htmlspecialchars($settings['accred1_desc'] ?? '120,000+ People'); ?></span>
-                        </div>
-                    </div>
-                    <!-- Badge 2: Best Hospital -->
-                    <div class="header-badge">
-                        <div class="badge-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
-                        </div>
-                        <div class="badge-content">
-                            <span class="badge-label"><?php echo htmlspecialchars($settings['accred2_title'] ?? 'Best Hospital'); ?></span>
-                            <span class="badge-value"><?php echo htmlspecialchars($settings['accred2_desc'] ?? 'Rewa (M.P.)'); ?></span>
-                        </div>
-                    </div>
-                    <!-- Badge 3: Open 24 Hours -->
-                    <div class="header-badge">
-                        <div class="badge-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-                        </div>
-                        <div class="badge-content">
-                            <span class="badge-label">Open 24 Hours</span>
-                            <span class="badge-value">Services & Facilities</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. Bottom Main Navigation Bar (Sticky) -->
-        <nav class="main-nav-bar">
-            <div class="container">
-                <div class="nav-overlay"></div>
-                
-                <!-- Logo Container with Diagonal Background wrapper -->
-                <div class="nav-logo-bg-wrap">
-                    <a href="index.php" class="logo-container" aria-label="VHRC Home">
-                        <img src="images/logo.png" alt="VHRC Logo" class="site-logo">
-                    </a>
-                </div>
-
-                <div class="nav-menu-wrapper">
-                    <ul class="nav-menu">
-                        <li class="active"><a href="#" class="nav-link">Home</a></li>
-                        <li><a href="#" class="nav-link">About Us</a></li>
-                        <li class="nav-item-dropdown">
-                            <a href="#" class="nav-link dropdown-trigger">
-                                Department
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a href="#">Cardiology</a>
-                                <a href="#">Neurology</a>
-                                <a href="#">Orthopedics</a>
-                                <a href="#">Pediatrics</a>
-                                <a href="#">Emergency Medicine</a>
-                            </div>
-                        </li>
-                        <li class="nav-item-dropdown">
-                            <a href="#" class="nav-link dropdown-trigger">
-                                Treatment
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                            </a>
-                            <div class="dropdown-menu">
-                                <a href="#">Surgical Care</a>
-                                <a href="#">Physical Therapy</a>
-                                <a href="#">Diagnostics & Lab</a>
-                                <a href="#">Outpatient Care</a>
-                            </div>
-                        </li>
-                        <li><a href="#" class="nav-link">Our Doctor</a></li>
-                        <li><a href="#" class="nav-link">Gallery</a></li>
-                        <li><a href="#" class="nav-link">Blog</a></li>
-                        <li><a href="#" class="nav-link">Contact</a></li>
-                    </ul>
-                    
-                    <a href="#contact" class="btn-cta">
-                        <span>Contact Now</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </a>
-                </div>
-
-                <!-- Hamburger menu button (mobile only) -->
-                <button class="mobile-toggle" aria-label="Toggle Menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-            </div>
-        </nav>
-    </header>
+    <?php
+    $active_page = 'home';
+    require_once __DIR__ . '/includes/header.php';
+    ?>
 
     <!-- Main Content / Hero Slider Showcase -->
     <main>
@@ -343,10 +200,14 @@ try {
 
             <!-- Slider Controls -->
             <button class="slider-arrow prev-arrow" aria-label="Previous Slide">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
             </button>
             <button class="slider-arrow next-arrow" aria-label="Next Slide">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="m9 18 6-6-6-6" />
+                </svg>
             </button>
 
             <!-- Slider Indicators -->
@@ -371,7 +232,10 @@ try {
                     <div class="emergency-card">
                         <div class="emergency-badge">
                             <span class="pulse-ring"></span>
-                            <svg class="emergency-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/><path d="M3.22 12H9.5l1.5-4.5 2 9 1.5-6 1.5 1.5h3.8"/></svg>
+                            <svg class="emergency-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                <path d="M3.22 12H9.5l1.5-4.5 2 9 1.5-6 1.5 1.5h3.8" />
+                            </svg>
                         </div>
                         <div class="emergency-content">
                             <h2><?php echo htmlspecialchars($settings['emergency_title'] ?? '24/7 Emergency Medical Services'); ?></h2>
@@ -385,7 +249,10 @@ try {
                 <div class="accreditations-bar">
                     <div class="accreditation-item">
                         <div class="accred-seal-gold">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
                         </div>
                         <div class="accreditation-text">
                             <h3><?php echo htmlspecialchars($settings['accred1_title'] ?? 'National & International Standards'); ?></h3>
@@ -395,7 +262,10 @@ try {
                     <div class="accreditation-divider"></div>
                     <div class="accreditation-item">
                         <div class="accred-seal-nabh">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                <path d="m9 12 2 2 4-4" />
+                            </svg>
                         </div>
                         <div class="accreditation-text">
                             <h3><?php echo htmlspecialchars($settings['accred2_title'] ?? 'NABH & ISO Certified Quality'); ?></h3>
@@ -409,7 +279,11 @@ try {
                     <!-- Stat 1 -->
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-stethoscope"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6h2a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-stethoscope">
+                                <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+                                <path d="M8 15v1a6 6 0 0 0 6 6h2a6 6 0 0 0 6-6v-4" />
+                                <circle cx="20" cy="10" r="2" />
+                            </svg>
                         </div>
                         <div class="stat-info">
                             <span class="stat-number"><?php echo htmlspecialchars($settings['stat1_number'] ?? '24+'); ?></span>
@@ -419,7 +293,12 @@ try {
                     <!-- Stat 2 -->
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg>
                         </div>
                         <div class="stat-info">
                             <span class="stat-number"><?php echo htmlspecialchars($settings['stat2_number'] ?? '29,000+'); ?></span>
@@ -429,7 +308,12 @@ try {
                     <!-- Stat 3 -->
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 4v16"/><path d="M2 8h18a2 2 0 0 1 2 2v10"/><path d="M2 17h20"/><circle cx="6" cy="12" r="2"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M2 4v16" />
+                                <path d="M2 8h18a2 2 0 0 1 2 2v10" />
+                                <path d="M2 17h20" />
+                                <circle cx="6" cy="12" r="2" />
+                            </svg>
                         </div>
                         <div class="stat-info">
                             <span class="stat-number"><?php echo htmlspecialchars($settings['stat3_number'] ?? '100+'); ?></span>
@@ -439,7 +323,10 @@ try {
                     <!-- Stat 4 -->
                     <div class="stat-card">
                         <div class="stat-icon">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="8" r="7" />
+                                <path d="M8.21 13.89 7 23l5-3 5 3-1.21-9.12" />
+                            </svg>
                         </div>
                         <div class="stat-info">
                             <span class="stat-number"><?php echo htmlspecialchars($settings['stat4_number'] ?? '15+'); ?></span>
@@ -451,146 +338,195 @@ try {
 
         <!-- 4. Clinical Graphics Showcase Section (Alternating Theme Cycle: White) -->
         <?php if (!empty($posters)): ?>
-        <section class="graphics-showcase-section section-bg-white">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-badge">👉 Clinical Portfolio</span>
-                    <h2 class="section-title">Specialities & Services</h2>
-                    <p class="section-desc">View our advanced clinical department graphics, trauma guidelines, and specialized medical service flyers.</p>
-                </div>
- 
-                <div class="graphics-grid">
-                    <?php foreach ($posters as $poster): ?>
-                        <div class="graphic-card">
-                            <div class="graphic-image-wrap">
-                                <img src="<?php echo htmlspecialchars($poster['image_path']); ?>" alt="Clinical Graphic" class="graphic-img">
-                                <div class="graphic-hover-overlay">
-                                    <div class="zoom-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                                    </div>
-                                    <span class="hover-text">Zoom Poster</span>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            </div>
-        </section>
-        <?php endif; ?>
-
-        <!-- Our Experts Doctors Slider Section (Alternating Theme Cycle: Dark) -->
-        <?php if (!empty($doctors)): ?>
-        <section id="doctors" class="doctors-slider-section section-bg-dark">
-            <div class="container">
-                <div class="doctors-section-header">
-                    <div class="header-left">
-                        <span class="doctors-badge">Our Experts</span>
-                        <h2 class="doctors-title">Expert Coaching & Facilities <br><span>Built for Healing</span></h2>
-                    </div>
-                    <div class="header-right">
-                        <a href="#appointment" class="btn-view-experts">
-                            <span>View All Experts</span>
-                            <span class="arrow-circle">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <section class="graphics-showcase-section section-bg-white">
+                <div class="container">
+                    <div class="doctor-section-header">
+                        <div class="doctor-badge-wrapper">
+                            <span class="doctor-badge-pill portfolio-badge-pill">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="badge-icon"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                                CLINICAL PORTFOLIO
                             </span>
-                        </a>
+                        </div>
+                        <h2 class="doctor-section-title">Specialities & Services <br><span>Clinical Graphics Showcase</span></h2>
+                        <p class="doctor-section-desc">View our advanced clinical department graphics, trauma guidelines, and specialized medical service flyers.</p>
                     </div>
-                </div>
 
-                <!-- Slider Track / Wrapper -->
-                <div class="doctors-carousel-container">
-                    <button class="carousel-nav-btn prev" aria-label="Scroll Left">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    </button>
-                    
-                    <div class="doctors-carousel-track">
-                        <?php foreach ($doctors as $doctor): ?>
-                            <!-- Doctor Card -->
-                            <div class="doctor-slide-card">
-                                <div class="doctor-image-container">
-                                    <img src="<?php echo htmlspecialchars($doctor['image_path'] ?: 'images/doctor_default.png'); ?>" alt="<?php echo htmlspecialchars($doctor['name']); ?>" class="doctor-img" onerror="this.src='images/doctor_default.png';">
-                                                       <!-- Hover Floating Social Capsule overlay -->
-                                    <div class="social-hover-capsule">
-                                        <a href="<?php echo htmlspecialchars(!empty($doctor['social_fb']) ? $doctor['social_fb'] : '#'); ?>" target="_blank" class="social-icon" aria-label="Facebook">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
-                                        </a>
-                                        <a href="<?php echo htmlspecialchars(!empty($doctor['social_tw']) ? $doctor['social_tw'] : '#'); ?>" target="_blank" class="social-icon" aria-label="Twitter">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
-                                        </a>
-                                        <a href="<?php echo htmlspecialchars(!empty($doctor['social_ig']) ? $doctor['social_ig'] : '#'); ?>" target="_blank" class="social-icon" aria-label="Instagram">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
-                                        </a>
-                                        <a href="<?php echo htmlspecialchars(!empty($doctor['social_in']) ? $doctor['social_in'] : '#'); ?>" target="_blank" class="social-icon" aria-label="LinkedIn">
-                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
-                                        </a>
+                    <div class="graphics-grid">
+                        <?php foreach ($posters as $poster): ?>
+                            <div class="graphic-card">
+                                <div class="graphic-image-wrap">
+                                    <img src="<?php echo htmlspecialchars($poster['image_path']); ?>" alt="Clinical Graphic" class="graphic-img">
+                                    <div class="graphic-hover-overlay">
+                                        <div class="zoom-icon">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                                <circle cx="11" cy="11" r="8" />
+                                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                                <line x1="11" y1="8" x2="11" y2="14" />
+                                                <line x1="8" y1="11" x2="14" y2="11" />
+                                            </svg>
+                                        </div>
+                                        <span class="hover-text">Zoom Poster</span>
                                     </div>
-                                </div>
-                                
-                                <!-- Glassmorphic Info Card Overlay at the Bottom -->
-                                <div class="doctor-info-glass">
-                                    <span class="doctor-specialty-badge">
-                                        <?php echo getSpecialtyIcon($doctor['specialty']); ?>
-                                        <?php echo htmlspecialchars($doctor['specialty'] ?: 'Consultant'); ?>
-                                    </span>
-                                    <h3 class="doc-name"><?php echo htmlspecialchars($doctor['name']); ?></h3>
-                                    <p class="doc-experience"><?php echo htmlspecialchars($doctor['experience'] ?? '0'); ?> Years Experience</p>
                                 </div>
                             </div>
                         <?php endforeach; ?>
                     </div>
-
-                    <button class="carousel-nav-btn next" aria-label="Scroll Right">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                    </button>
                 </div>
-
-                <!-- Custom Scroll Progress Bar -->
-                <div class="carousel-progress-wrap">
-                    <div class="carousel-progress-bar"></div>
-                </div>
-            </div>
-        </section>
+            </section>
         <?php endif; ?>
 
-        <!-- Our Departments Section (Alternating Theme Cycle: White) -->
+        <!-- Our Experts Doctors Section -->
+        <?php if (!empty($doctors)): ?>
+            <section id="doctors" class="doctors-slider-section">
+                <div class="container">
+                    <div class="doctor-section-header">
+                        <div class="doctor-badge-wrapper">
+                            <span class="doctor-badge-pill">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="badge-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                                TOP MEDICAL EXPERTS
+                            </span>
+                        </div>
+                        <h2 class="doctor-section-title">Meet Expert Doctors <br><span>Expert Behind Your Health</span></h2>
+                        <p class="doctor-section-desc">World-class healthcare professionals dedicated to providing exceptional care with compassion and expertise</p>
+                    </div>
+
+                    <!-- Slider Track / Wrapper -->
+                    <div class="doctors-carousel-container">
+                        <button class="carousel-nav-btn prev" aria-label="Scroll Left">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6" />
+                            </svg>
+                        </button>
+
+                        <div class="doctors-carousel-track">
+                            <?php foreach ($doctors as $doctor): ?>
+                                <a href="doctor/<?php echo getDoctorSlug($doctor['name']); ?>.php" class="home-doctor-card doctor-slide-card" style="text-decoration: none; color: inherit; display: flex;">
+                                    <div class="home-doctor-img-wrap">
+                                        <img src="<?php echo htmlspecialchars($doctor['image_path'] ?: 'images/doctor_default.png'); ?>" alt="<?php echo htmlspecialchars($doctor['name']); ?>" class="home-doctor-img" onerror="this.src='images/doctor_default.png';">
+                                        
+                                        <!-- Overlays -->
+                                        <div class="home-doctor-overlay-specialty">
+                                            <span class="home-doctor-badge-specialty">
+                                                <?php echo getSpecialtyIcon($doctor['specialty']); ?>
+                                                <?php echo htmlspecialchars($doctor['specialty'] ?: 'Specialist'); ?>
+                                            </span>
+                                        </div>
+                                        
+                                        <div class="home-doctor-overlay-rating">
+                                            <span class="home-doctor-badge-rating">
+                                                <svg viewBox="0 0 24 24" fill="currentColor" class="star-icon"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                                <?php
+                                                $rating = ($doctor['id'] % 2 === 0) ? '4.8' : '4.9';
+                                                echo $rating;
+                                                ?>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="home-doctor-info">
+                                        <h3 class="home-doctor-name"><?php echo htmlspecialchars($doctor['name']); ?></h3>
+                                        <span class="home-doctor-title">
+                                            <?php
+                                            if (strtolower($doctor['specialty']) === 'urology') {
+                                                echo 'Senior Urologist';
+                                            } else if (strtolower($doctor['specialty']) === 'gynecology') {
+                                                echo 'Gynecologist';
+                                            } else if (strpos(strtolower($doctor['specialty']), 'medicine') !== false) {
+                                                echo 'Medicine Specialist';
+                                            } else {
+                                                echo htmlspecialchars($doctor['specialty']) . ' Specialist';
+                                            }
+                                            ?>
+                                        </span>
+                                        
+                                        <div class="home-doctor-meta">
+                                            <div class="meta-item">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="meta-icon"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                                                <span><?php echo htmlspecialchars($doctor['experience'] ?: '5'); ?>+ Years</span>
+                                            </div>
+                                            <div class="meta-divider">|</div>
+                                            <div class="meta-item">
+                                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="meta-icon"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                                <span>
+                                                    <?php
+                                                    $patients = intval($doctor['experience'] ?: 5) * 400 . '+ Patients';
+                                                    echo $patients;
+                                                    ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        </div>
+
+                        <button class="carousel-nav-btn next" aria-label="Scroll Right">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Custom Scroll Progress Bar -->
+                    <div class="carousel-progress-wrap">
+                        <div class="carousel-progress-bar"></div>
+                    </div>
+
+                    <div class="home-doctors-footer">
+                        <div class="home-doctors-trust-info">
+                            <span class="trust-dot">●</span> 24/7 Available
+                            <span class="trust-dot">●</span> Book Instantly
+                            <span class="trust-dot">●</span> Trusted by 50,000+ Patients
+                        </div>
+                    </div>
+                </div>
+            </section>
+        <?php endif; ?>
+
         <?php
         $departments = [
             [
-                'name'  => 'Advanced Pathology Lab',
-                'image' => 'images/graphics-for-homepage/poster-1.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6.5L4.2 17a2 2 0 0 0 1.8 3h12a2 2 0 0 0 1.8-3L15 8.5V2"/><path d="M7 2h10"/><path d="M7.5 13h9"/></svg>',
-                'desc'  => 'Our Advanced Pathology Lab is the diagnostic backbone of the hospital, equipped with fully automated analysers and managed by experienced pathologists and certified lab technicians. We offer a comprehensive range of investigations including haematology, biochemistry, microbiology, serology, histopathology and molecular diagnostics, all processed under strict quality-control protocols. Every sample is handled with a barcoded tracking system that minimises human error and ensures complete traceability from collection to report. Because we understand that timely results save lives, our lab runs round the clock, delivering accurate and reliable reports at the earliest, often within a few hours for routine tests. Our facility maintains international standards of calibration and sterilisation, and our team follows rigorous bio-safety practices to protect both patients and staff. From a simple blood count to complex specialised panels, every test is verified before release so that your treating doctor receives precise, actionable data. Cost-effective pricing, home-sample-collection support and digital report delivery make quality diagnostics accessible and convenient for every patient who walks through our doors.',
+                'name'        => 'Urology',
+                'sub_title'   => 'Kidney & Urinary System Care',
+                'link'        => 'departments/urology.php',
+                'theme_class' => 'dept-urology',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a7 7 0 0 0 7-7c0-4.3-7-11-7-11S5 10.7 5 15a7 7 0 0 0 7 7z"/></svg>'
             ],
             [
-                'name'  => 'ICU (Intensive Care Unit)',
-                'image' => 'images/graphics-for-homepage/poster-2.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2 5 4-10 2 5h6"/></svg>',
-                'desc'  => 'Our Intensive Care Unit is designed to provide critical, life-saving care for seriously ill and post-operative patients who need constant monitoring. The unit is fitted with advanced life-support systems including multi-parameter monitors, mechanical ventilators, infusion pumps, defibrillators and central oxygen supply, ensuring that every vital sign is tracked 24×7. A dedicated team of intensivists, critical-care specialists and trained nursing staff remains on duty around the clock, ready to respond instantly to any change in a patient\'s condition. We follow evidence-based protocols for infection control, sepsis management and ventilator care to give patients the safest possible environment for recovery. Each bed is supported by individual monitoring stations and rapid access to emergency medication, while our integrated alarm systems alert caregivers the moment intervention is required. Family counselling and transparent communication are part of our care philosophy, so relatives stay informed at every stage. Whether managing cardiac emergencies, respiratory failure or multi-organ complications, our ICU combines cutting-edge technology with compassionate expertise to maximise survival and ensure a smooth, monitored transition back to the general ward.',
+                'name'        => 'Critical Care ICU',
+                'sub_title'   => 'Advanced Life Support & Monitoring',
+                'link'        => 'departments/icu-dialysis.php',
+                'theme_class' => 'dept-icu',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>'
             ],
             [
-                'name'  => 'NICU (Neonatal Intensive Care Unit)',
-                'image' => 'images/graphics-for-homepage/poster-3.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-9a6 6 0 0 1 12 0c0 4.65-6 9-6 9z"/><circle cx="12" cy="11" r="2"/></svg>',
-                'desc'  => 'Our Neonatal Intensive Care Unit is specially designed to provide advanced medical care for newborn babies, including premature and critically ill infants who need extra support during their most fragile days. The unit features state-of-the-art incubators, radiant warmers, phototherapy units, neonatal ventilators and continuous monitoring equipment that maintain the precise temperature, oxygen and humidity levels a tiny baby requires. Our team of neonatologists, paediatricians and specially trained NICU nurses delivers gentle, round-the-clock care in a calm, infection-controlled environment. We focus on developmentally supportive care, encouraging early kangaroo-mother contact and breastfeeding wherever possible to strengthen the bond between mother and child. Strict hand-hygiene and sterilisation protocols protect these vulnerable patients from infection, while individualised treatment plans address conditions such as low birth weight, jaundice, respiratory distress and feeding difficulties. Parents are guided and counselled throughout the journey, learning how to care for their baby with confidence before discharge. By combining compassionate nursing with modern neonatal technology, our NICU gives every newborn the best possible start in life and the highest chance of a healthy, thriving future.',
+                'name'        => 'General Medicine',
+                'sub_title'   => 'Comprehensive Primary Care',
+                'link'        => 'departments/medicine.php',
+                'theme_class' => 'dept-medicine',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6h2a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>'
             ],
             [
-                'name'  => 'CT Scan',
-                'image' => 'images/graphics-for-homepage/poster-4.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>',
-                'desc'  => 'Our CT Scan facility offers fast, high-resolution imaging that helps doctors diagnose a wide range of conditions with remarkable precision. Using a modern multi-slice computed-tomography scanner, we capture detailed cross-sectional images of the brain, chest, abdomen, spine, bones and blood vessels within seconds, reducing scan time and patient discomfort. The system is optimised for low-radiation-dose protocols, ensuring that patients—especially children and the elderly—receive the safest possible exposure without compromising image quality. Our experienced radiologists and technologists work together to plan each study carefully, whether it is a plain scan or a contrast-enhanced angiography, and reports are prepared promptly so treatment can begin without delay. The scanner supports advanced applications such as 3D reconstruction, CT angiography and guided biopsies, giving treating physicians a complete and accurate picture for confident decision-making. We maintain strict safety and hygiene standards, and our staff guides every patient gently through the procedure to ease anxiety. With round-the-clock availability for emergencies, digital image archiving and quick report turnaround, our CT Scan service delivers dependable diagnostic clarity exactly when it matters most.',
+                'name'        => 'Gynaecology',
+                'sub_title'   => 'Women\'s Health & Wellness',
+                'link'        => 'departments/gynecology.php',
+                'theme_class' => 'dept-gynecology',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M12 15v7M9 19h6"/></svg>'
             ],
             [
-                'name'  => 'Dialysis Unit',
-                'image' => 'images/graphics-for-homepage/poster-5.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5S6 9 6 14a6 6 0 0 0 12 0c0-5-6-11.5-6-11.5z"/><path d="M9.5 14a2.5 2.5 0 0 0 2.5 2.5"/></svg>',
-                'desc'  => 'Our Dialysis Unit provides safe, comfortable and high-quality care for patients living with chronic kidney disease and acute renal failure. The unit is equipped with modern haemodialysis machines, reverse-osmosis water-treatment plants and individual dialysis stations that ensure every session is delivered under hygienic, precisely controlled conditions. A dedicated team of nephrologists, dialysis technicians and trained nurses supervises each treatment, continuously monitoring blood pressure, fluid balance and vital parameters to keep patients stable throughout the procedure. We follow strict sterilisation and single-use protocols to eliminate the risk of cross-infection, and separate arrangements are maintained for patients who require special isolation. Recognising that dialysis is a long-term journey, we focus on patient comfort with reclining chairs, a calm environment and compassionate support that reduces the physical and emotional strain of regular sessions. Flexible scheduling, including morning and evening slots, makes treatment convenient for working patients and their families. Our team also offers dietary guidance, anaemia management and ongoing counselling to improve overall well-being. With reliable machines, experienced staff and affordable pricing, our Dialysis Unit helps patients maintain a better quality of life with dignity and care.',
+                'name'        => 'Orthopedics and Trauma',
+                'sub_title'   => 'Bone, Joint & Spine Care',
+                'link'        => 'departments/orthopedics.php',
+                'theme_class' => 'dept-ortho',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16.5 7.5a2.12 2.12 0 0 0-3 0L9.4 11.6a2.12 2.12 0 0 0 0 3L6.5 17.5a2.12 2.12 0 1 0 3 3l2.9-2.9a2.12 2.12 0 0 0 3 0l4.1-4.1a2.12 2.12 0 1 0-3-3z"/></svg>'
             ],
             [
-                'name'  => 'Blood Bank',
-                'image' => 'images/graphics-for-homepage/poster-6.jpeg',
-                'icon'  => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7S6 9.3 6 14.2a6 6 0 0 0 12 0C18 9.3 12 2.7 12 2.7z"/><path d="M12 9.5v5M9.5 12h5"/></svg>',
-                'desc'  => 'Our Blood Bank is a vital, life-saving facility committed to ensuring a safe and adequate supply of blood and blood components for patients in need. Operating under strict regulatory standards, the unit collects, tests, processes and stores blood with the highest levels of safety and hygiene. Every donated unit undergoes mandatory screening for transfusion-transmissible infections such as HIV, hepatitis B and C, malaria and syphilis, so that only thoroughly tested, compatible blood reaches the patient. With modern component-separation technology, we provide whole blood, packed red cells, platelets, plasma and other components tailored to each clinical requirement, helping us serve more patients from every donation. Temperature-controlled storage, careful cross-matching and meticulous record-keeping guarantee reliability during emergencies, surgeries, deliveries and the treatment of conditions like anaemia and thalassaemia. Our trained staff also organise voluntary blood-donation drives and counsel donors, promoting the noble cause of regular, safe donation within the community. Available round the clock, our Blood Bank works in close coordination with the hospital\'s emergency and surgical departments to ensure that no patient is ever left waiting when a transfusion can mean the difference between life and death.',
-            ],
+                'name'        => 'Gastroenterology',
+                'sub_title'   => 'Digestive System Treatment',
+                'link'        => 'departments/gastroenterology.php',
+                'theme_class' => 'dept-gastro',
+                'icon'        => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.52 0 10-4.48 10-10a8 8 0 0 0-8-8c-1.33 0-2.67.67-4 2-1.33-1.33-2.67-2-4-2a8 8 0 0 0-8 8c0 5.52 4.48 10 10 10z"/></svg>'
+            ]
         ];
         ?>
         <section id="departments" class="departments-section section-bg-white">
@@ -603,19 +539,24 @@ try {
 
                 <div class="departments-grid">
                     <?php foreach ($departments as $dept): ?>
-                        <article class="department-card">
-                            <div class="department-card-top" style="background-image: url('<?php echo htmlspecialchars($dept['image']); ?>');">
-                                <span class="department-card-overlay"></span>
-                                <div class="department-card-head">
-                                    <span class="department-icon"><?php echo $dept['icon']; ?></span>
-                                    <h3 class="department-name"><?php echo htmlspecialchars($dept['name']); ?></h3>
+                        <article class="department-card <?php echo $dept['theme_class']; ?>">
+                            <div class="department-card-top-row">
+                                <div class="department-icon-wrap">
+                                    <?php echo $dept['icon']; ?>
                                 </div>
+                                <span class="dept-badge">24/7 Care</span>
                             </div>
-                            <div class="department-card-bottom">
-                                <p class="department-desc"><?php echo htmlspecialchars($dept['desc']); ?></p>
-                                <a href="#appointment" class="department-view-more">
-                                    <span>View More</span>
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <div class="department-card-content">
+                                <h3 class="dept-title"><?php echo htmlspecialchars($dept['name']); ?></h3>
+                                <p class="dept-subtitle"><?php echo htmlspecialchars($dept['sub_title']); ?></p>
+                            </div>
+                            <div class="department-card-bottom-row">
+                                <a href="<?php echo htmlspecialchars($dept['link']); ?>" class="dept-explore-btn">
+                                    <span>Explore Services</span>
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </svg>
                                 </a>
                             </div>
                         </article>
@@ -623,117 +564,492 @@ try {
                 </div>
 
                 <div class="departments-footer-cta">
-                    <a href="#appointment" class="btn-view-all-departments">
+                    <a href="departments/index.php" class="btn-view-all-departments">
                         <span>View All Departments</span>
                         <span class="arrow-circle">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14" />
+                                <path d="m12 5 7 7-7 7" />
+                            </svg>
                         </span>
                     </a>
                 </div>
             </div>
         </section>
 
-        <!-- 5. Appointment Booking Section (Alternating Theme Cycle: Soft Gray) -->
-        <section id="appointment" class="appointment-booking-section section-bg-soft">
+        <!-- 5. Appointment Booking / Contact Section -->
+        <section id="appointment" class="appointment-booking-section">
             <div class="container">
-                <div class="booking-grid">
-                    <!-- Left Column: Info Card -->
-                    <div class="booking-info-card">
-                        <span class="section-badge">👉 Connect With Us</span>
-                        <h2 class="booking-title">Book an Appointment</h2>
-                        <p class="booking-desc">Schedule your clinical consultation with VHRC's certified experts. For urgent emergencies, please call our hotline immediately.</p>
-                        
-                        <div class="booking-details-list">
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                </div>
-                                <div class="detail-text">
-                                    <span>24/7 Emergency Hotline</span>
-                                    <strong><?php echo htmlspecialchars($settings['booking_hotline'] ?? '+91 9589899826'); ?></strong>
-                                </div>
-                            </div>
+                <div class="doctor-section-header">
+                    <div class="doctor-badge-wrapper">
+                        <span class="doctor-badge-pill contact-badge-pill">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="badge-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                            GET IN TOUCH
+                        </span>
+                    </div>
+                    <h2 class="doctor-section-title">Contact Our <br><span>Healthcare Team</span></h2>
+                    <p class="doctor-section-desc">We're here to help 24/7. Reach out for appointments, emergencies, or any health inquiries.</p>
+                </div>
 
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                                </div>
-                                <div class="detail-text">
-                                    <span>Clinical Hours</span>
-                                    <strong><?php echo htmlspecialchars($settings['booking_hours'] ?? 'Mon - Sun: 09:00 AM - 09:00 PM'); ?></strong>
-                                </div>
+                <div class="contact-section-grid">
+                    <!-- Left Column: Info Cards -->
+                    <div class="contact-info-column">
+                        <!-- Phone Card -->
+                        <div class="contact-info-card">
+                            <div class="contact-card-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
                             </div>
+                            <div class="contact-card-text">
+                                <span class="contact-card-label">Phone</span>
+                                <strong class="contact-card-value"><?php echo htmlspecialchars($settings['header_phone'] ?? '+91 9589899826'); ?></strong>
+                                <span class="contact-card-subtext">24/7 Available for Emergencies</span>
+                            </div>
+                        </div>
 
-                            <div class="detail-item">
-                                <div class="detail-icon">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <!-- Email Card -->
+                        <div class="contact-info-card">
+                            <div class="contact-card-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                            </div>
+                            <div class="contact-card-text">
+                                <span class="contact-card-label">Email</span>
+                                <strong class="contact-card-value"><?php echo htmlspecialchars($settings['header_email'] ?? 'vhrcrewa@gmail.com'); ?></strong>
+                                <span class="contact-card-subtext">We'll respond within 24 hours</span>
+                            </div>
+                        </div>
+
+                        <!-- Address Card -->
+                        <div class="contact-info-card">
+                            <div class="contact-card-icon-box">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            </div>
+                            <div class="contact-card-text">
+                                <span class="contact-card-label">Address</span>
+                                <strong class="contact-card-value"><?php echo htmlspecialchars($settings['booking_address'] ?? 'Narendra Nagar, Amaiya Colony, Rewa (M.P.)'); ?></strong>
+                                <span class="contact-card-subtext">Vindhya Hospital & Research Centre</span>
+                            </div>
+                        </div>
+
+                        <!-- Working Hours Card -->
+                        <div class="working-hours-card">
+                            <div class="working-hours-header">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="clock-icon"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                <span>Working Hours</span>
+                            </div>
+                            <div class="working-hours-rows">
+                                <div class="working-hours-row">
+                                    <span class="day-label">Monday - Saturday</span>
+                                    <span class="hours-val">9:00 AM - 3:00 PM <br>6:00 PM - 9:00 PM</span>
                                 </div>
-                                <div class="detail-text">
-                                    <span>Hospital Address</span>
-                                    <strong><?php echo htmlspecialchars($settings['booking_address'] ?? 'Narendra Nagar, Amaiya Colony, Rewa (M.P.)'); ?></strong>
+                                <div class="working-hours-divider"></div>
+                                <div class="working-hours-row">
+                                    <span class="day-label">Sunday</span>
+                                    <span class="hours-val">9:00 AM - 1:00 PM</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Right Column: Form Card -->
-                    <div class="booking-form-card">
-                        <form action="index.php#appointment" method="POST" class="booking-form">
+                    <div class="contact-form-column">
+                        <form action="index.php#appointment" method="POST" class="home-contact-form">
                             <input type="hidden" name="action" value="book_appointment">
-                            
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="name">Full Name <span class="required">*</span></label>
-                                    <input type="text" id="name" name="name" placeholder="John Doe" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="phone">Phone Number <span class="required">*</span></label>
-                                    <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required>
-                                </div>
+
+                            <div class="form-group">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" id="name" name="name" class="form-input" placeholder="siva singh" required>
                             </div>
 
-                            <div class="form-row">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="you@example.com">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" placeholder="+91 9589899826" required>
+                            </div>
+
+                            <div class="form-row-2">
                                 <div class="form-group">
-                                    <label for="email">Email Address</label>
-                                    <input type="email" id="email" name="email" placeholder="john@example.com">
+                                    <label for="department" class="form-label">Select Specialty</label>
+                                    <select id="department" name="department" class="form-select">
+                                        <option value="General Medicine">General Medicine</option>
+                                        <option value="Urology & Kidney Center">Urology & Kidney Center</option>
+                                        <option value="Gastroenterology Unit">Gastroenterology Unit</option>
+                                        <option value="Advanced Surgical Care">Advanced Surgical Care</option>
+                                        <option value="Pulmonology Department">Pulmonology Department</option>
+                                        <option value="Oncology & Cancer Care">Oncology & Cancer Care</option>
+                                        <option value="Mother & Child Clinic">Mother & Child Clinic</option>
+                                        <option value="ICU & Critical Care">ICU & Critical Care</option>
+                                        <option value="Dialysis Department">Dialysis Department</option>
+                                        <option value="Orthopedics Center">Orthopedics Center</option>
+                                        <option value="Neurology Services">Neurology Services</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="date">Appointment Date <span class="required">*</span></label>
-                                    <input type="date" id="date" name="date" required>
+                                    <label for="date" class="form-label">Appointment Date</label>
+                                    <input type="date" id="date" name="date" class="form-input" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <label for="department">Select Specialty</label>
-                                <select id="department" name="department">
-                                    <option value="General Medicine">General Medicine</option>
-                                    <option value="Urology & Kidney Center">Urology & Kidney Center</option>
-                                    <option value="Gastroenterology Unit">Gastroenterology Unit</option>
-                                    <option value="Advanced Surgical Care">Advanced Surgical Care</option>
-                                    <option value="Pulmonology Department">Pulmonology Department</option>
-                                    <option value="Oncology & Cancer Care">Oncology & Cancer Care</option>
-                                    <option value="Mother & Child Clinic">Mother & Child Clinic</option>
-                                    <option value="ICU & Critical Care">ICU & Critical Care</option>
-                                    <option value="Dialysis Department">Dialysis Department</option>
-                                    <option value="Orthopedics Center">Orthopedics Center</option>
-                                    <option value="Neurology Services">Neurology Services</option>
-                                </select>
+                                <label for="message" class="form-label">Your Message</label>
+                                <textarea id="message" name="message" class="form-textarea" placeholder="Tell us how we can help you..." rows="4"></textarea>
                             </div>
 
-                            <div class="form-group">
-                                <label for="message">Describe Symptoms / Message</label>
-                                <textarea id="message" name="message" rows="4" placeholder="Briefly describe your symptoms or booking request..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn-cta submit-btn">
-                                <span>Submit Request</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 7-7 7 7"/><path d="M12 5v14"/></svg>
+                            <button type="submit" class="btn-send-message">
+                                <span>Send Message</span>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="send-icon">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
                             </button>
                         </form>
                     </div>
                 </div>
+
+                <!-- Emergency Banner -->
+                <div class="emergency-contact-banner">
+                    <div class="emergency-left">
+                        <div class="emergency-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="3" width="22" height="13" rx="2" ry="2"/><path d="M12 8v4"/><path d="M8 10h8"/><path d="M17 16h3a2 2 0 0 1 2 2v3H2v-3a2 2 0 0 1 2-2h3"/><circle cx="7" cy="21" r="2"/><circle cx="17" cy="21" r="2"/></svg>
+                        </div>
+                        <div class="emergency-text">
+                            <h3>Medical Emergency?</h3>
+                            <span>24/7 Emergency Services Available</span>
+                        </div>
+                    </div>
+                    <div class="emergency-right">
+                        <a href="tel:108" class="emergency-btn-white">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            Call 108
+                        </a>
+                        <a href="tel:<?php echo htmlspecialchars($settings['header_phone'] ?? '+919589899826'); ?>" class="emergency-btn-outline">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                            Hospital Line
+                        </a>
+                    </div>
+                </div>
             </div>
         </section>
+
+        <section class="fancy-tabs-section">
+            <!-- Tab Navigation Header -->
+            <div class="tabs-container">
+                <button class="tab-btn active" onclick="switchTab(event, 'why-choose-us')">
+                    <span class="tab-indicator"></span>
+                    <h3>Why Choose Us</h3>
+                    <p>Listen from real patients</p>
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'our-innovation')">
+                    <span class="tab-indicator"></span>
+                    <h3>Our Innovation</h3>
+                    <p>Our dedicated research team</p>
+                </button>
+                <button class="tab-btn" onclick="switchTab(event, 'facilities')">
+                    <span class="tab-indicator"></span>
+                    <h3>Facilities</h3>
+                    <p>Facilities - Vindhya Hospital Rewa</p>
+                </button>
+            </div>
+
+            <!-- Content Wrapper -->
+            <div class="tab-content-wrapper">
+
+                <!-- Tab 1: Why Choose Us -->
+                <div id="why-choose-us" class="tab-panel active">
+                    <div class="tab-grid">
+                        <div class="tab-image-side">
+                            <img src="images/Homepage-images/1.jpg" alt="Vindhya Hospital Reception">
+                            <div class="floating-badge">24/7 Care</div>
+                        </div>
+                        <div class="tab-text-side">
+                            <h2>Why Choose <span class="accent-text">Vindhya Us</span></h2>
+                            <p class="lead-text">Trusted care, advanced treatment, and compassion under one roof.</p>
+                            <p class="body-text">At Vindhya Hospital, Rewa, we are committed to delivering high-quality healthcare with modern technology and experienced specialists. Our 24×7 emergency services, patient-focused approach, and advanced diagnostic facilities ensure timely care and better recovery.</p>
+                            <a href="#" class="fancy-btn">Contact Us <i class="arrow-icon">&rarr;</i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Our Innovation (Hidden by default) -->
+                <div id="our-innovation" class="tab-panel">
+                    <div class="tab-grid">
+                        <div class="tab-image-side">
+                            <img src="images/Homepage-images/2.jpg" alt="Medical Innovation">
+                        </div>
+                        <div class="tab-text-side">
+                            <h2>Our Healthcare <span class="accent-text">Innovation</span></h2>
+                            <p class="lead-text">Advancing healthcare through technology, expertise, and compassion.</p>
+                            <p class="body-text">We combine modern medical technology, evidence-based practices, and skilled professionals to deliver precise diagnosis and advanced treatment. From digital health records to minimally invasive surgeries, our hospital continuously upgrades to meet global standards.</p>
+                            <a href="#" class="fancy-btn">Contact Us <i class="arrow-icon">&rarr;</i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 3: Facilities (Hidden by default) -->
+                <div id="facilities" class="tab-panel">
+                    <div class="tab-grid">
+                        <div class="tab-image-side">
+                            <img src="images/Homepage-images/3.jpg" alt="Operation Theater">
+                        </div>
+                        <div class="tab-text-side">
+                            <h2>Advanced <span class="accent-text">Facilities</span></h2>
+                            <p class="lead-text">Comprehensive medical services with modern infrastructure.</p>
+                            <p class="body-text">We provide state-of-the-art facilities designed to ensure comfort, safety, and advanced medical support. Our hospital features fully equipped emergency units, modern operation theaters, intensive care units (ICU), advanced diagnostic laboratories, and digital X-ray capabilities.</p>
+                            <a href="#" class="fancy-btn">Contact Us <i class="arrow-icon">&rarr;</i></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <section class="testimonial-section">
+            <div class="section-header">
+                <span class="pill-badge">REVIEWS</span>
+                <h2>Patient <span class="accent-text">Testimonials</span></h2>
+                <div class="header-line"></div>
+            </div>
+
+            <div class="testimonial-container">
+                <div class="rating-summary-box">
+                    <div class="logo-wrapper">
+                        <img src="images/logo.png" alt="VHRC Logo" class="hospital-logo">
+                    </div>
+                    <h3>Vindhya Hospital &<br>Research Centre</h3>
+                    <div class="rating-stars-row">
+                        <span class="rating-number">4.4</span>
+                        <div class="stars">★★★★★</div>
+                    </div>
+                    <p class="review-count">1,421 Google reviews</p>
+                    <a href="https://google.com" target="_blank" class="write-review-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" />
+                        </svg>
+                        Write a review
+                    </a>
+                </div>
+
+                <div class="slider-wrapper">
+                    <button class="nav-arrow prev-btn" aria-label="Previous review">&#10094;</button>
+                    <button class="nav-arrow next-btn" aria-label="Next review">&#10095;</button>
+
+                    <div class="reviews-track">
+
+                        <div class="review-card" data-full-text="All good experience with the staff and physicians. Very clean and supportive environment. Highly recommended for any advanced treatments and super speciality care in Rewa.">
+                            <div class="card-header">
+                                <div class="user-avatar avatar-n">N</div>
+                                <div class="user-meta">
+                                    <h4>Narendra Singh</h4>
+                                    <span class="time-ago">4 months ago</span>
+                                </div>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon">
+                            </div>
+                            <div class="card-rating">
+                                <div class="card-stars">★★★★★</div>
+                                <span class="verified-badge" title="Verified Review">✓</span>
+                            </div>
+                            <p class="review-text">All good experience with the staff and physicians. Very clean and supportive environment.</p>
+                            <button class="read-more-link">Read more</button>
+                        </div>
+
+                        <div class="review-card" data-full-text="Dr. Dhirendra Gautam ne sahi treatment or sahi bimari ki jankari di.. yaha bahot acha raha or dr. aradhana mam ne sahi advice aur care di. Staff bhi bahut accha aur helpful hai. Main Vindhya Hospital se bahut santusht hoon aur sabhi ko yaha aane ki salah deta hoon.">
+                            <div class="card-header">
+                                <div class="user-avatar avatar-f">F</div>
+                                <div class="user-meta">
+                                    <h4>Faizan</h4>
+                                    <span class="time-ago">4 months ago</span>
+                                </div>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon">
+                            </div>
+                            <div class="card-rating">
+                                <div class="card-stars">★★★★★</div>
+                                <span class="verified-badge" title="Verified Review">✓</span>
+                            </div>
+                            <p class="review-text">Dr. Dhirendra Gautam ne sahi treatment or sahi bimari ki jankari di.. yaha bahot acha raha or dr. aradhana mam ne sahi...</p>
+                            <button class="read-more-link">Read more</button>
+                        </div>
+
+                        <div class="review-card" data-full-text="My parents sunila devi in under Dr. Vishal mishra sir hme hamri bimari ke bare me achhe sae bateye hain aur sir ne operation bahut ache se kiya. Hospital ki suvidhaen aur safai bahut acchi hai. Paramedical staff ne bhi bahut accha sehyog diya. Dhanyawad.">
+                            <div class="card-header">
+                                <div class="user-avatar avatar-p">P</div>
+                                <div class="user-meta">
+                                    <h4>Pawan Kumar</h4>
+                                    <span class="time-ago">4 months ago</span>
+                                </div>
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon">
+                            </div>
+                            <div class="card-rating">
+                                <div class="card-stars">★★★★★</div>
+                                <span class="verified-badge" title="Verified Review">✓</span>
+                            </div>
+                            <p class="review-text">My parents sunila devi in under Dr. Vishal mishra sir hme hamri bimari ke bare me achhe sae bateye hain aur sir ne operatio...</p>
+                            <button class="read-more-link">Read more</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="trust-and-message-section">
+
+            <div class="certificates-container">
+                <div class="certs-header">
+                    <h2>Certificates & <span class="accent-text">Standards</span></h2>
+                    <div class="small-accent-line"></div>
+                </div>
+                <div class="certs-grid">
+                    <div class="cert-item">
+                        <img src="images/Homepage-images/nabh_logo-1.jpg" alt="NABH Accredited">
+                    </div>
+                    <div class="cert-item">
+                        <img src="images/Homepage-images/logo-2.png" alt="VHRC Certification">
+                    </div>
+                    <div class="cert-item">
+                        <img src="images/Homepage-images/Untitled-design-13.png" alt="24/7 Service Everyday">
+                    </div>
+                </div>
+            </div>
+
+            <div class="chairman-section">
+                <div class="chairman-grid">
+
+                    <div class="chairman-image-wrapper">
+                        <img src="images/Homepage-images/CHAIR-MAN-IMAGE.jpg" alt="Mr. Narendra Singh - Chairman" class="chairman-img">
+                        <div class="image-decorative-backdrop"></div>
+                    </div>
+
+                    <div class="chairman-message-card">
+                        <div class="quote-mark">&#8220;</div>
+
+                        <span class="hospital-sub-tag">Vindhya Hospital & Research Centre</span>
+
+                        <div class="message-body">
+                            <p>A deep sense of commitment, clinical excellence, innovation, teamwork, and care in Vindhya Hospital & Research Center, Rewa to new horizons of success.</p>
+                            <p>We provide distinctive comprehensive and compassionate patient care for patient utilizing multidisciplinary approach. To our aim to providing patient with early diagnosis and the most advance techniques available to achieve outstanding result.</p>
+                            <p>We entail the finest medical skills and best medical professional to dispense quality treatment and care. We are the only hospital in Rewa Region who is providing world class health care facility in rural areas for poor patient.</p>
+                        </div>
+
+                        <div class="chairman-signature">
+                            <p class="wishes-text">Best Wishes,</p>
+                            <h3>Mr. Narendra Singh</h3>
+                            <span class="title-badge">Chairman</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+       
+
+        <section class="news-and-links-section">
+  <div class="nl-container">
+    
+    <div class="news-column">
+      <div class="column-header">
+        <h2>Recent <span class="accent-text">News</span></h2>
+        <a href="#" class="view-all-link">Read All News</a>
+      </div>
+      
+      <div class="news-grid">
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-date">June 16, 2026</span>
+            <div class="news-badge">Health</div>
+          </div>
+          <h3 class="news-title">Health Checkup in Rewa — Comprehensive Preventive Healthcare at Vindhya Hospital & Research Center</h3>
+          <a href="#" class="news-read-more">Read article &rarr;</a>
+        </article>
+        
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-date">May 19, 2026</span>
+            <div class="news-badge">Specialty</div>
+          </div>
+          <h3 class="news-title">IVF Treatment in Rewa | Vindhya Hospital & Research Center</h3>
+          <a href="#" class="news-read-more">Read article &rarr;</a>
+        </article>
+        
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-date">June 9, 2026</span>
+            <div class="news-badge">Surgery</div>
+          </div>
+          <h3 class="news-title">Best Kidney Stone Treatment in Rewa | Advanced Laser Surgery at Vindhya Hospital & Research Center</h3>
+          <a href="#" class="news-read-more">Read article &rarr;</a>
+        </article>
+        
+        <article class="news-card">
+          <div class="news-meta">
+            <span class="news-date">April 28, 2026</span>
+            <div class="news-badge">Emergency</div>
+          </div>
+          <h3 class="news-title">Emergency & Critical Care Services in Rewa | Vindhya Hospital & Research Center</h3>
+          <a href="#" class="news-read-more">Read article &rarr;</a>
+        </article>
+      </div>
+    </div>
+
+    <div class="links-column">
+      <div class="column-header">
+        <h2>Quick <span class="accent-text">Links</span></h2>
+      </div>
+      
+      <div class="links-list">
+        <a href="#" class="quick-link-item">
+          <div class="link-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div class="link-details">
+            <h4>Make An Appointment</h4>
+            <span class="link-subtext">Schedule a visit online</span>
+          </div>
+          <span class="arrow-indicator">&rsaquo;</span>
+        </a>
+        
+        <a href="mailto:info@vindhyahospital.com" class="quick-link-item">
+          <div class="link-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div class="link-details">
+            <h4>Email Us</h4>
+            <span class="link-subtext">Get in touch via message</span>
+          </div>
+          <span class="arrow-indicator">&rsaquo;</span>
+        </a>
+        
+        <a href="tel:+1234567890" class="quick-link-item">
+          <div class="link-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <div class="link-details">
+            <h4>Phone Support</h4>
+            <span class="link-subtext">24/7 Helpline available</span>
+          </div>
+          <span class="arrow-indicator">&rsaquo;</span>
+        </a>
+        
+        <a href="#" class="quick-link-item whatsapp-variant">
+          <div class="link-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          </div>
+          <div class="link-details">
+            <h4>WhatsApp Support</h4>
+            <span class="link-subtext">Instant chat assistant</span>
+          </div>
+          <span class="arrow-indicator">&rsaquo;</span>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</section>
+    
     </main>
 
     <!-- Lightbox Modal for Clinical Posters -->
@@ -747,7 +1063,135 @@ try {
         </div>
     </div>
 
+    <footer class="site-footer">
+  <div class="footer-container">
+    
+    <!-- Column 1: Brand & Contact Info -->
+    <div class="footer-column brand-info">
+      <img src="images/logo.png" alt="VHRC Logo" class="footer-logo">
+      <p class="address-text">
+        Near Old Bus Stand, Bansh Ghat,<br>
+        Rewa (MP) 486001, Rewa, India,<br>
+        Madhya Pradesh
+      </p>
+      <div class="contact-details">
+        <a href="tel:07662406000" class="contact-line">
+          <div class="mini-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <span>076624 06000</span>
+        </a>
+        <a href="tel:+919589899826" class="contact-line">
+          <div class="mini-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <span>+91 9589899826</span>
+        </a>
+        <a href="mailto:vhrcrewa@gmail.com" class="contact-line">
+          <div class="mini-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <span>vhrcrewa@gmail.com</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Column 2: Main Menu Links -->
+    <div class="footer-column links-nav">
+      <h3>Main Menu</h3>
+      <div class="footer-title-line"></div>
+      <ul>
+        <li><a href="#">Homepage</a></li>
+        <li><a href="#">About Us</a></li>
+        <li><a href="departments/">Department</a></li>
+        <li><a href="#">Our Doctor</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 3: About Us Links -->
+    <div class="footer-column links-nav">
+      <h3>About Us</h3>
+      <div class="footer-title-line"></div>
+      <ul>
+        <li><a href="about/mission-values.php">Our Mission &amp; Values</a></li>
+        <li><a href="about/policies-procedures.php">Policies &amp; Procedures</a></li>
+        <li><a href="about/consultation-care.php">Consultation &amp; Advanced Care</a></li>
+        <li><a href="about/admission-prep.php">Preparing for Admission</a></li>
+        <li><a href="about/quality-safety.php">Quality Care &amp; Patient Safety</a></li>
+        <li><a href="about/diversity-specialty.php">Diversity is Our Specialty</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 4: Hospital Hours & Emergency Box -->
+    <div class="footer-column hospital-hours">
+      <h3>Hospital Hours</h3>
+      <div class="footer-title-line"></div>
+      <div class="hours-list">
+        <div class="hours-row">
+          <span class="day">
+            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 
+            Monday - Friday
+          </span>
+          <span class="time teal-highlight">08:00 - 20:00</span>
+        </div>
+        <div class="hours-row">
+          <span class="day">
+            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 
+            Saturday
+          </span>
+          <span class="time">09:00 - 18:00</span>
+        </div>
+        <div class="hours-row">
+          <span class="day">
+            <svg class="clock-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 
+            Sunday
+          </span>
+          <span class="time">09:00 - 18:00</span>
+        </div>
+      </div>
+      
+      <!-- Premium Glassmorphism Emergency Badge -->
+      <div class="emergency-footer-card">
+        <span class="live-pulse-dot"></span>
+        <span class="card-title">Emergency : 24 Hours</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM FOOTER SUB-BAR WITH CREDIT -->
+  <div class="footer-bottom-bar">
+    <div class="bottom-bar-container">
+      <p>Copyright &copy; 2026 <strong>Vindhya Hospital Rewa</strong> | Designed by <a href="#" class="agency-credit">Rainbow Shine Infotech</a></p>
+    </div>
+  </div>
+</footer>
+    <!-- Review Modal Popup -->
+    <div class="review-modal-overlay" id="reviewModal">
+        <div class="review-modal-card">
+            <button class="review-modal-close" aria-label="Close modal">&times;</button>
+            <div class="review-modal-header">
+                <div class="user-avatar" id="modalAvatar"></div>
+                <div class="user-meta">
+                    <h4 id="modalAuthor"></h4>
+                    <span class="time-ago" id="modalTime"></span>
+                </div>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" class="google-icon">
+            </div>
+            <div class="card-rating">
+                <div class="card-stars">★★★★★</div>
+                <span class="verified-badge">✓</span>
+            </div>
+            <div class="review-modal-content">
+                <p id="modalText"></p>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom JS Scripts -->
     <script src="js/main.js"></script>
 </body>
+
 </html>

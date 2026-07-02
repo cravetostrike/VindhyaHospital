@@ -1,0 +1,18 @@
+Options -MultiViews
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Rewrite legacy departments.php to departments/index.php
+    RewriteRule ^departments\.php$ departments/index.php [L,QSA]
+    
+    # Clean URLs for departments: rewrite department/slug to departments/department.php?id=slug
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^department/([a-zA-Z0-9_-]+)/?$ departments/department.php?id=$1 [L,QSA]
+    
+    # Clean URLs for treatments: rewrite treatment/slug to treatments/treatment.php?id=slug
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^treatment/([a-zA-Z0-9_-]+)/?$ treatments/treatment.php?id=$1 [L,QSA]
+</IfModule>
